@@ -28,6 +28,9 @@ Route::get('blog', ['as' => 'blog.index', 'uses' => 'BlogController@getIndex']);
 //Category Router
 Route::resource('categories', 'CategoryController', ['except' => ['create']]);
 
+//Comment Router
+Route::post('comments/{post_id}', ['uses' => 'CommentsController@store', 'as'=> 'comments.store']);
+
 //Tag Router
 Route::resource('tags', 'TagController', ['except' => ['create']]);
 
