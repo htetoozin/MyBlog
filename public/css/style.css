@@ -33,10 +33,14 @@
 	clear: both;
 	margin-left: 65px;
 	font-size: 16px;
-	line-height: 1.2em;
+	line-height: 1.3em;
 }
 
 
 .comment-title{
 	margin-bottom: 45px;
+}
+
+.comment-title>span{
+	margin-right: 15px;
 }
