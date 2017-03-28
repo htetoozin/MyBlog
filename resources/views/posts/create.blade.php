@@ -5,6 +5,15 @@
 @section('stylesheet')
 	<link rel="stylesheet" href="{{ asset('css/parsley.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+	<script src="//cloud.tinymce.com/stable/tinymce.min.js"></script>
+	<script>
+		tinymce.init({ 
+			selector:'textarea',
+			plugins : 'link lists code ',
+			menubar: 'false'
+
+		});
+	</script>
 @endsection
 
 @section('content')
@@ -13,7 +22,7 @@
 	<div class="col-md-8-col-md-offset-2">
 		<h1>Create A New Post </h1>
 		<hr>
-		<form action="{{ route('posts.store') }}" method="post" data-parsley-validate="">
+		<form action="{{ route('posts.store') }}" method="post" data-parsley-validate="" enctype="multipart/form-data">
 			{{csrf_field() }}
 			<div class="form-group">
 				<label for="title">Title</label>
@@ -38,6 +47,10 @@
 					<option value="{{ $tag->id }}">{{ $tag->name }}</option>
 					@endforeach
 				</select>
+			</div>
+			<div class="form-group">
+				<label for="featured_image">Upload Featured Image</label>
+				<input type="file" name="featured_image">
 			</div>
 			<div class="form-group">
 				<label for="body">Body</label>

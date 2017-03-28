@@ -7,6 +7,9 @@ use App\Post;
 use App\Category;
 use App\Tag;
 use Session;
+use Purifier;
+use Image;
+use Storage;
 
 class PostController extends Controller
 {
@@ -51,14 +54,27 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'slug'  => 'required|alpha_dash|min:5|max:255',
             'category_id' => 'required|integer',
-            'body'  => 'required'
+            'body'  => 'required',
+            'featured_image' => 'sometimes|required'
         ]);
 
         $post = new Post;
         $post->title = $request->title;
         $post->slug  = $request->slug;
         $post->category_id = $request->category_id;
-        $post->body  = $request->body;
+        $post->body  = Purifier::clean($request->body);
+
+        //Save Our Image
+
+        if ($request->hasFile('featured_image')) {
+            $image = $request->file('featured_image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $location = public_path('images/' . $filename);
+            Image::make($image)->resize(800, 400)->save($location);
+
+            $post->image = $filename;
+        }
+
         $post->save();
 
 
@@ -109,9 +125,10 @@ class PostController extends Controller
 
         $this->validate($request, [
             'title' => 'required|max:255',
-            'slug'  => 'required|alpha_dash|min:5|max:255',
+            'slug'  => 'required|alpha_dash|min:5|max:255|',
             'category_id' => 'required|integer',
-            'body'  => 'required'
+            'body'  => 'required',
+            'featured_image' => 'image'
         ]);
 
         $post = Post::find($id);
@@ -120,7 +137,25 @@ class PostController extends Controller
         $post->title = $request->input('title');
         $post->slug  = $request->input('slug');
         $post->category_id = $request->input('category_id');
-        $post->body = $request->input('body');
+        $post->body = Purifier::clean($request->input('body'));
+
+        if ($request->hasFile('featured_image')) {
+            //Add new Photo
+
+            $image = $request->file('featured_image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $location = public_path('images/' . $filename);
+            Image::make($image)->resize(800, 400)->save($location);
+
+            $oldFilename = $post->image;
+
+            //Update the database
+            $post->image = $filename;
+
+            //Delete the photo
+            Storage::delete($oldFilename);
+        }
+
         $post->save();
 
         if(isset($request->tags)){
@@ -146,6 +181,7 @@ class PostController extends Controller
         $post = Post::find($id);
         
         $post->tags()->detach();
+        Storage::delete($post->image);
         $post->delete();
 
         Session::flash('success', 'The blog post was delete successuflly!');

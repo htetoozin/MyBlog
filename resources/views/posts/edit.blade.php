@@ -4,6 +4,15 @@
 
 @section('stylesheet')
 	<link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+	<script src="//cloud.tinymce.com/stable/tinymce.min.js"></script>
+	<script>
+		tinymce.init({ 
+			selector:'textarea',
+			plugins : 'link lists code',
+			menubar: 'false'
+
+		});
+	</script>
 @endsection
 
 
@@ -11,7 +20,7 @@
 
 
 <div class="row">
-	<form action="{{ route('posts.update', $post->id) }}" method="post">
+	<form action="{{ route('posts.update', $post->id) }}" method="post" enctype="multipart/form-data">
 		{{ csrf_field('') }}
 		{{ method_field('PATCH') }}
 		<div class="col-md-12">
@@ -45,6 +54,10 @@
 				        @endforeach
 				      </select>
     			</div>﻿
+    			<div class="form-group">
+					<label for="featured_image">Update Featured Image</label>
+					<input type="file" name="featured_image">
+				</div>
 				<div class="form-group">
 					<label for="body">Body</label>
 					<textarea name="body" id="" cols="30" rows="10" class="form-control">{{ $post->body }}</textarea>

@@ -9,8 +9,9 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="col-md-8">
+			<img src="{{ asset('images/' . $post->image) }}" alt="" width="800" height="400">
 			<h1>{{ $post->title }}</h1>
-			<p class="lead"> {{ $post->body }}</p>
+			<p class="lead"> {!! $post->body !!}</p>
 			<hr>
 			<div class="tags">
 				@foreach($post->tags as $tag)
@@ -94,7 +95,7 @@
 						</form>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" style="margin-top: 15px;">
 					<div class="col-md-12">
 						<a href="{{ route('posts.index') }}" class="btn btn-default btn-block"> << See All Posts</a>
 					</div>
